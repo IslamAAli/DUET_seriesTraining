@@ -1,3 +1,4 @@
+#%%
 import torch
 import numpy as np
 from torch import nn
@@ -79,7 +80,7 @@ metrics_for_early_stopping = ['AOE', 'AVE']
 running_time = train_model(net, optimiser, loss_func, metrics_dict_training, metrics_for_early_stopping, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path)
 print(f'training time: {running_time} s/epoch (time of gyro loss: {np.mean(loss_func.times_gyro)}, time of acc loss: {np.mean(loss_func.times_accel)})')
 print('='.ljust(20, '='))
-
+#%%
 # test
 metric_dict_test = {'Absolute Orientation Error (AOE)': lambda x, y: metric_aoe_test(x, y),
                     'Absolute Yaw Error (AYE)': lambda x, y: metric_aye_test(x, y),

@@ -64,12 +64,15 @@ def metric_rte_test(pred, targ, duration, repetitions):
         start = np.random.randint(0, n - duration - 1)
         p0 = ps[start]
         ps_gt = ps[start:start+duration+1]
+        
+        print (len(ps_gt))
         v0 = vs[start]
         r0 = rots[start]
         hat_ps = inf_trajectory_from_signals(
                 acc[start:start+duration],
                 hat_gyro[start:start+duration],
                 r0, v0, p0)
+
         rtes.append(RMSE(hat_ps - ps_gt).cpu().numpy())
 
     return np.mean(rtes)
