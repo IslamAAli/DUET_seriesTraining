@@ -1,4 +1,4 @@
-datasets/*
+original_datasets/*
 .vscode/*
 *.pt
 
