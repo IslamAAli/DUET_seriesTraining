@@ -127,3 +127,24 @@ class IMULoss(nn.Module):
     def init_timer(self):
         self.times_accel = []
         self.times_gyro = []
+
+class IMULossGyro(nn.Module):
+    def __init__(self, target='pos', dt=1/200, T=64):
+        super(IMULossGyro, self).__init__()
+        self.params = torch.nn.Parameter(torch.ones(2, requires_grad=True))
+        self.gyro_loss = GyroLoss(dt=dt, T=T)
+
+        self.times_gyro = []
+
+    def forward(self, pred, targ):
+        torch.cuda.synchronize()
+        start_epoch = time.time()
+        loss_sum = 0.5 / (self.params[1] ** 2) * self.gyro_loss(pred, targ) + torch.log(1 + self.params[1] ** 2)
+        torch.cuda.synchronize()
+        end_epoch = time.time()
+        self.times_gyro.append(end_epoch - start_epoch)
+
+        return loss_sum
+
+    def init_timer(self):
+        self.times_gyro = []
