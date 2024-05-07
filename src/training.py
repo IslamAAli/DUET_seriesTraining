@@ -119,3 +119,4 @@ def train_model(net, optimizer, loss_fn, metrics_dict, metrics_for_early_stoppin
 
     return np.mean(times)
 
+

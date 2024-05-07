@@ -65,7 +65,7 @@ def metric_rte_test(pred, targ, duration, repetitions):
         p0 = ps[start]
         ps_gt = ps[start:start+duration+1]
         
-        print (len(ps_gt))
+        #print (len(ps_gt))
         v0 = vs[start]
         r0 = rots[start]
         hat_ps = inf_trajectory_from_signals(
