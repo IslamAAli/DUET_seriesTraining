@@ -22,7 +22,7 @@ torch.manual_seed(1)
 random.seed(1)
 np.random.seed(1)
 
-ENABLE_GYRO_NET = False
+ENABLE_GYRO_NET = True
 ENABLE_ACC_NET  = True
 ENABLE_FIXED_DATA_PROPAGATION = True
 

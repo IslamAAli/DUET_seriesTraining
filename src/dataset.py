@@ -55,6 +55,7 @@ class EuRoC(Dataset):
             for name in self.seq_names:
                 imu = np.genfromtxt(f'{original_data_dir}/{name}/mav0/imu0/data.csv', delimiter=',', skip_header=1)
                 gt = np.genfromtxt(f'{original_data_dir}/{name}/mav0/state_groundtruth_estimate0/data.csv', delimiter=',', skip_header=1)
+                np.savetxt(f'{processed_data_dir}/{name}_raw_gt.csv', gt, delimiter=',')
 
                 t0 = np.max([gt[0, 0], imu[0, 0]])
                 t_end = np.min([gt[-1, 0], imu[-1, 0]])
