@@ -68,7 +68,7 @@ if ENABLE_GYRO_NET:
     # ===========================
     # Data reading and preparation - Gyro
     # ===========================
-    tumvi = TUMVIUncali(base_path+'/original_datasets/tumvi', base_path+'/data/tumvi', train_seqs, test_seqs, training_samples, T)
+    tumvi = TUMVICali(base_path+'/original_datasets/tumvi', base_path+'/data/tumvi', train_seqs, test_seqs, training_samples, T)
     train_iter = DataLoader(tumvi, batch_size=batch_size, shuffle=False)
     val_data = tumvi.val
 
@@ -181,7 +181,7 @@ if ENABLE_ACC_NET:
     # ===========================
     # Data reading and preparation - Gyro
     # ===========================
-    tumvi = TUMVIUncali(base_path+'/original_datasets/tumvi', base_path+'/data/tumvi_fixed_gyro_raw_acc', train_seqs, test_seqs, training_samples, T)
+    tumvi = TUMVICali(base_path+'/original_datasets/tumvi', base_path+'/data/tumvi_fixed_gyro_raw_acc', train_seqs, test_seqs, training_samples, T)
     train_iter = DataLoader(tumvi, batch_size=batch_size, shuffle=False)
     val_data = tumvi.val
 
