@@ -219,21 +219,21 @@ if ENABLE_ACC_NET:
     # train - Acc
     # ===========================
     # Acc Net
-    acc_net = IMUNetAcc(in_channel, layer_channels, out_channel, kernel_size, dropout, euroc.mean, euroc.std).cuda()
-    loss_func_acc = IMULossAcc(T=T).cuda()
-    optimiser_acc = torch.optim.Adam([
-        {'params': acc_net.parameters(), 'lr':lr, 'weight_decay': 0.1, },
-        {'params': loss_func_acc.parameters(), 'weight_decay': 0}
-    ])
+    # acc_net = IMUNetAcc(in_channel, layer_channels, out_channel, kernel_size, dropout, euroc.mean, euroc.std).cuda()
+    # loss_func_acc = IMULossAcc(T=T).cuda()
+    # optimiser_acc = torch.optim.Adam([
+    #     {'params': acc_net.parameters(), 'lr':lr, 'weight_decay': 0.1, },
+    #     {'params': loss_func_acc.parameters(), 'weight_decay': 0}
+    # ])
 
-    metrics_dict_training_acc = {'AOE': lambda x, y: metric_aoe_training(x, y),
-                                'AVE': lambda x, y: metric_ave_training(x, y)}
-    metrics_for_early_stopping_acc = ['AOE', 'AVE']
+    # metrics_dict_training_acc = {'AOE': lambda x, y: metric_aoe_training(x, y),
+    #                             'AVE': lambda x, y: metric_ave_training(x, y)}
+    # metrics_for_early_stopping_acc = ['AOE', 'AVE']
 
-    # perform training
-    running_time = train_model(acc_net, optimiser_acc, loss_func_acc, metrics_dict_training_acc, metrics_for_early_stopping_acc, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path_acc)
-    print(f'training time: {running_time} s/epoch (time of accel loss: {np.mean(loss_func_acc.times_accel)})')
-    print('='.ljust(20, '='))
+    # # perform training
+    # running_time = train_model(acc_net, optimiser_acc, loss_func_acc, metrics_dict_training_acc, metrics_for_early_stopping_acc, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path_acc)
+    # print(f'training time: {running_time} s/epoch (time of accel loss: {np.mean(loss_func_acc.times_accel)})')
+    # print('='.ljust(20, '='))
 
     # ===========================
     # test - Acc
