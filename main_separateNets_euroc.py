@@ -49,34 +49,11 @@ test_seqs = [
     'V2_02_medium'
 ]
 
-# test_seqs = [
-#     'MH_02_easy',
-#     'MH_04_difficult',
-#     'V1_03_difficult',
-#     'V2_02_medium'
-# ]
-
-# data split (different days)
-# test_seqs = [
-    # 'V1_02_medium',
-    # 'V1_03_difficult',
-    # 'V2_01_easy',
-    # 'V2_02_medium',
-    # 'V2_03_difficult'
-# ]
-# train_seqs = [
-#     'MH_01_easy',
-#     'MH_02_easy',
-#     'MH_03_medium',
-#     'MH_04_difficult',
-#     'MH_05_difficult'
-# ]
-
 #%% Loading Data
 print('Loading data...')
 base_path = os.path.dirname(os.path.abspath(__file__))
 
-corrected_imu_base_path = base_path+'/data/corrected'
+corrected_imu_base_path = base_path+'/data/euroc_corrected'
 
 #%% Model Parameters
 in_channel = 6
@@ -102,23 +79,23 @@ if ENABLE_GYRO_NET:
     train_iter = DataLoader(euroc, batch_size=batch_size, shuffle=False)
     val_data = euroc.val
 
-    # # ===========================
-    # # train - Gyro
-    # # ===========================
-    # # Gyro Net
-    # gyro_net = IMUNetGyro(in_channel, layer_channels, out_channel, kernel_size, dropout, euroc.mean, euroc.std).cuda()
-    # loss_func_gyro = IMULossGyro(T=T).cuda()
-    # optimiser_gyro = torch.optim.Adam([
-    #     {'params': gyro_net.parameters(), 'lr':lr, 'weight_decay': 0.1, },
-    #     {'params': loss_func_gyro.parameters(), 'weight_decay': 0}
-    # ])
-    # metrics_dict_training_gyro = {'AOE': lambda x, y: metric_aoe_training(x, y)}
-    # metrics_for_early_stopping_gyro = ['AOE']
+    # ===========================
+    # train - Gyro
+    # ===========================
+    # Gyro Net
+    gyro_net = IMUNetGyro(in_channel, layer_channels, out_channel, kernel_size, dropout, euroc.mean, euroc.std).cuda()
+    loss_func_gyro = IMULossGyro(T=T).cuda()
+    optimiser_gyro = torch.optim.Adam([
+        {'params': gyro_net.parameters(), 'lr':lr, 'weight_decay': 0.1, },
+        {'params': loss_func_gyro.parameters(), 'weight_decay': 0}
+    ])
+    metrics_dict_training_gyro = {'AOE': lambda x, y: metric_aoe_training(x, y)}
+    metrics_for_early_stopping_gyro = ['AOE']
 
-    # # perform training
-    # running_time = train_model(gyro_net, optimiser_gyro, loss_func_gyro, metrics_dict_training_gyro, metrics_for_early_stopping_gyro, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path_gyro)
-    # print(f'training time: {running_time} s/epoch (time of gyro loss: {np.mean(loss_func_gyro.times_gyro)})')
-    # print('='.ljust(20, '='))
+    # perform training
+    running_time = train_model(gyro_net, optimiser_gyro, loss_func_gyro, metrics_dict_training_gyro, metrics_for_early_stopping_gyro, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path_gyro)
+    print(f'training time: {running_time} s/epoch (time of gyro loss: {np.mean(loss_func_gyro.times_gyro)})')
+    print('='.ljust(20, '='))
 
     # ===========================
     # test - Gyro
@@ -147,7 +124,7 @@ if ENABLE_FIXED_DATA_PROPAGATION:
     source_folder =  base_path+"/data/euroc"
 
     # Destination folder path
-    destination_folder = base_path+"/data/fixed_gyro_raw_acc"
+    destination_folder = base_path+"/data/euroc_fixed_gyro_raw_acc"
 
     # List all files in the source folder
     files = os.listdir(source_folder)
@@ -173,8 +150,8 @@ if ENABLE_FIXED_DATA_PROPAGATION:
     # replace the gyro columns in the imu file with corrected data
     # ===================================================================
     base_folder = base_path+"/data/euroc"
-    corr_folder = base_path+"/data/corrected"
-    dst_folder  = base_path+"/data/fixed_gyro_raw_acc"
+    corr_folder = base_path+"/data/euroc_corrected"
+    dst_folder  = base_path+"/data/euroc_fixed_gyro_raw_acc"
     for seq in test_seqs:
         # file names 
         base_filename = seq+"_imu.csv"
@@ -211,7 +188,7 @@ if ENABLE_ACC_NET:
     # ===========================
     # Data reading and preparation - Gyro
     # ===========================
-    euroc = EuRoC(base_path+'/original_datasets/euroc', base_path+'/data/fixed_gyro_raw_acc', train_seqs, test_seqs, training_samples, T)
+    euroc = EuRoC(base_path+'/original_datasets/euroc', base_path+'/data/euroc_fixed_gyro_raw_acc', train_seqs, test_seqs, training_samples, T)
     train_iter = DataLoader(euroc, batch_size=batch_size, shuffle=False)
     val_data = euroc.val
 
@@ -219,21 +196,21 @@ if ENABLE_ACC_NET:
     # train - Acc
     # ===========================
     # Acc Net
-    # acc_net = IMUNetAcc(in_channel, layer_channels, out_channel, kernel_size, dropout, euroc.mean, euroc.std).cuda()
-    # loss_func_acc = IMULossAcc(T=T).cuda()
-    # optimiser_acc = torch.optim.Adam([
-    #     {'params': acc_net.parameters(), 'lr':lr, 'weight_decay': 0.1, },
-    #     {'params': loss_func_acc.parameters(), 'weight_decay': 0}
-    # ])
+    acc_net = IMUNetAcc(in_channel, layer_channels, out_channel, kernel_size, dropout, euroc.mean, euroc.std).cuda()
+    loss_func_acc = IMULossAcc(T=T).cuda()
+    optimiser_acc = torch.optim.Adam([
+        {'params': acc_net.parameters(), 'lr':lr, 'weight_decay': 0.1, },
+        {'params': loss_func_acc.parameters(), 'weight_decay': 0}
+    ])
 
-    # metrics_dict_training_acc = {'AOE': lambda x, y: metric_aoe_training(x, y),
-    #                             'AVE': lambda x, y: metric_ave_training(x, y)}
-    # metrics_for_early_stopping_acc = ['AOE', 'AVE']
+    metrics_dict_training_acc = {'AOE': lambda x, y: metric_aoe_training(x, y),
+                                'AVE': lambda x, y: metric_ave_training(x, y)}
+    metrics_for_early_stopping_acc = ['AOE', 'AVE']
 
-    # # perform training
-    # running_time = train_model(acc_net, optimiser_acc, loss_func_acc, metrics_dict_training_acc, metrics_for_early_stopping_acc, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path_acc)
-    # print(f'training time: {running_time} s/epoch (time of accel loss: {np.mean(loss_func_acc.times_accel)})')
-    # print('='.ljust(20, '='))
+    # perform training
+    running_time = train_model(acc_net, optimiser_acc, loss_func_acc, metrics_dict_training_acc, metrics_for_early_stopping_acc, train_iter, val_data, epochs=num_epochs, patience=-1, ckpt_path=ckpt_path_acc)
+    print(f'training time: {running_time} s/epoch (time of accel loss: {np.mean(loss_func_acc.times_accel)})')
+    print('='.ljust(20, '='))
 
     # ===========================
     # test - Acc
